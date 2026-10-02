@@ -267,28 +267,28 @@ function generateTemplateExplanation(
     reduce: 'reducing',
   }[action];
 
-  const summary = `By ${actionText} your SIP, you could miss out on approximately ₹${difference.toLocaleString('en-IN')} in wealth creation. This is because you'll lose the power of compounding—where your returns generate their own returns over time. The earlier you invest, the more time your money has to grow exponentially.`;
+  const summary = `If you ${actionText === 'stopping' ? 'cancel' : actionText === 'pausing' ? 'pause' : 'reduce'} this SIP now, you could end up with ₹${difference.toLocaleString('en-IN')} less than planned. That's ${percentLoss}% of your target gone. The math is simple—less time in the market means missing out on compounding returns. Every month your money sits invested, it has the chance to grow not just from new contributions, but from returns earning their own returns.`;
 
   const keyPoints = [
-    `You'll have ${percentLoss}% less wealth at the end of your investment journey`,
-    `The majority of this loss comes from missed compounding, not just the contributions you skip`,
-    `Market timing is difficult—continuing to invest during downturns often leads to better long-term results`,
-    `Your ${sipDetails.goalName || 'financial goal'} may be delayed or harder to achieve`,
+    `Your final corpus drops by ₹${difference.toLocaleString('en-IN')}—that's ${percentLoss}% less wealth`,
+    `Most of this loss isn't from skipping payments—it's from missing compound growth on those payments`,
+    `Restarting later won't fully recover this. You'd need much higher contributions to catch up`,
+    `Markets have historically rewarded patience. Short-term thinking often backfires`,
   ];
 
   const riskFactors = [
-    'Market volatility: Returns may be higher or lower than projected',
-    'Inflation impact: Future purchasing power may differ from today',
-    'Behavioral risk: Stopping SIPs during downturns often means missing recovery',
+    'Market swings: Actual returns could be higher or lower than the ${impactCalculation.assumptions.expectedReturn}% we're projecting',
+    'Inflation: What you can buy with this money years from now depends on how prices change',
+    'Timing trap: People who pause during dips usually miss the recovery that follows',
   ];
 
-  const detailedExplanation = `
-The ₹${difference.toLocaleString('en-IN')} difference comes from two sources: the money you won't invest (₹${(originalProjection.totalInvestment - projectedImpact.totalInvestment).toLocaleString('en-IN')}), and more importantly, the returns you'll miss on that money (₹${(difference - (originalProjection.totalInvestment - projectedImpact.totalInvestment)).toLocaleString('en-IN')}).
+  const detailedExplanation = `Let's break down where that ₹${difference.toLocaleString('en-IN')} loss comes from. First, you're skipping ₹${(originalProjection.totalInvestment - projectedImpact.totalInvestment).toLocaleString('en-IN')} in payments. But here's what really hurts: you're also giving up ₹${(difference - (originalProjection.totalInvestment - projectedImpact.totalInvestment)).toLocaleString('en-IN')} in potential growth on that money.
 
-This is the power of compounding—Albert Einstein reportedly called it the "eighth wonder of the world." Every rupee you invest today has the potential to multiply over time. When you stop investing, you're not just losing your contributions; you're losing all the future growth those contributions would have generated.
+Compounding is what makes long-term investing work. Think of it like planting trees—each year they grow taller, and each year's growth adds to the next. Stop planting now, and you're not just missing a few saplings; you're missing decades of growth from those trees.
 
-Consider this: If you stop now and restart later, you'll need to invest significantly more per month to catch up. The best time to invest was yesterday; the second best time is today. These projections assume ${impactCalculation.assumptions.expectedReturn}% annual returns based on historical ${sipDetails.fundType} fund performance, but remember that past performance doesn't guarantee future results.
-  `.trim();
+Here's the tough reality: if you ${action === 'cancel' ? 'stop completely' : action === 'pause' ? 'pause for months' : 'cut your contributions'} and then change your mind later, catching up becomes much harder. You'd need to invest more each month just to get back on track.
+
+We're assuming ${impactCalculation.assumptions.expectedReturn}% annual returns based on how ${sipDetails.fundType} funds have performed historically. Reality might differ—markets go up and down. But the principle holds: time in the market beats timing the market. Past data shows investors who stayed consistent through ups and downs ended up ahead of those who tried to jump in and out.`;
 
   return {
     summary,

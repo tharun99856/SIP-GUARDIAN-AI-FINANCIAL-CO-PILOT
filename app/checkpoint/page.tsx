@@ -28,78 +28,117 @@ export default function CheckpointPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-12">
       <div className="container mx-auto px-4">
         {!showCheckpoint ? (
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-xl shadow-lg p-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                SIP Change Demo
-              </h1>
-              <p className="text-gray-600 mb-8">
-                Select an action to see the Checkpoint intervention screen
-              </p>
+          <div className="max-w-3xl mx-auto">
+            <div className="card-glass rounded-2xl p-10 animate-fade-in">
+              <div className="border-l-4 border-cyan-500 pl-6 mb-8">
+                <h1 className="text-4xl font-bold text-white mb-3">
+                  Checkpoint Demo
+                </h1>
+                <p className="text-gray-300 text-lg">
+                  Choose a scenario below to see how we intervene when investors try to change their SIP
+                </p>
+              </div>
 
               <div className="space-y-6">
-                <div className="border rounded-lg p-4 bg-blue-50">
-                  <h3 className="font-semibold text-lg mb-2">Current SIP Details</h3>
-                  <div className="space-y-2 text-sm">
-                    <p><span className="font-medium">Fund:</span> {demoSIPDetails.fundName}</p>
-                    <p><span className="font-medium">Monthly Amount:</span> ₹{demoSIPDetails.monthlyAmount.toLocaleString('en-IN')}</p>
-                    <p><span className="font-medium">Current Value:</span> ₹{demoSIPDetails.currentValue?.toLocaleString('en-IN')}</p>
-                    <p><span className="font-medium">Goal:</span> {demoSIPDetails.goalName} (₹{demoSIPDetails.goalAmount?.toLocaleString('en-IN')})</p>
+                <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                  <h3 className="font-semibold text-xl mb-4 text-cyan-400">Your Current SIP</h3>
+                  <div className="grid md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="text-gray-500 mb-1">Fund</p>
+                      <p className="text-white font-medium">{demoSIPDetails.fundName}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500 mb-1">Monthly Investment</p>
+                      <p className="text-white font-medium">₹{demoSIPDetails.monthlyAmount.toLocaleString('en-IN')}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500 mb-1">Current Value</p>
+                      <p className="text-white font-medium">₹{demoSIPDetails.currentValue?.toLocaleString('en-IN')}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500 mb-1">Goal</p>
+                      <p className="text-white font-medium">{demoSIPDetails.goalName} (₹{demoSIPDetails.goalAmount?.toLocaleString('en-IN')})</p>
+                    </div>
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">
-                    What would you like to do?
+                <div className="mt-8">
+                  <label className="block text-sm font-medium text-gray-400 mb-4 uppercase tracking-wide">
+                    Choose Your Scenario
                   </label>
                   <div className="space-y-3">
                     <button
                       onClick={() => handleActionChange('cancel')}
-                      className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
+                      className={`w-full text-left p-5 rounded-xl border-2 transition-all group ${
                         action === 'cancel'
-                          ? 'border-red-500 bg-red-50'
-                          : 'border-gray-200 hover:border-gray-300'
+                          ? 'border-red-500 bg-red-500/10 shadow-lg'
+                          : 'border-slate-700 bg-slate-800/30 hover:border-red-400 hover:bg-red-500/5'
                       }`}
                     >
-                      <div className="font-semibold text-lg">❌ Cancel SIP</div>
-                      <div className="text-sm text-gray-600">Stop all future investments</div>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="font-semibold text-lg text-white mb-1">❌ Cancel SIP Completely</div>
+                          <div className="text-sm text-gray-400">Stop all future investments permanently</div>
+                        </div>
+                        {action === 'cancel' && (
+                          <div className="text-red-400 text-2xl">→</div>
+                        )}
+                      </div>
                     </button>
 
                     <button
                       onClick={() => handleActionChange('pause')}
-                      className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
+                      className={`w-full text-left p-5 rounded-xl border-2 transition-all group ${
                         action === 'pause'
-                          ? 'border-yellow-500 bg-yellow-50'
-                          : 'border-gray-200 hover:border-gray-300'
+                          ? 'border-orange-500 bg-orange-500/10 shadow-lg'
+                          : 'border-slate-700 bg-slate-800/30 hover:border-orange-400 hover:bg-orange-500/5'
                       }`}
                     >
-                      <div className="font-semibold text-lg">⏸️ Pause SIP</div>
-                      <div className="text-sm text-gray-600">Temporarily stop for a few months</div>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="font-semibold text-lg text-white mb-1">⏸️ Pause for 6 Months</div>
+                          <div className="text-sm text-gray-400">Temporarily stop, resume later</div>
+                        </div>
+                        {action === 'pause' && (
+                          <div className="text-orange-400 text-2xl">→</div>
+                        )}
+                      </div>
                     </button>
 
                     <button
                       onClick={() => handleActionChange('reduce')}
-                      className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
+                      className={`w-full text-left p-5 rounded-xl border-2 transition-all group ${
                         action === 'reduce'
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-200 hover:border-gray-300'
+                          ? 'border-cyan-500 bg-cyan-500/10 shadow-lg'
+                          : 'border-slate-700 bg-slate-800/30 hover:border-cyan-400 hover:bg-cyan-500/5'
                       }`}
                     >
-                      <div className="font-semibold text-lg">📉 Reduce Amount</div>
-                      <div className="text-sm text-gray-600">Lower your monthly investment</div>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="font-semibold text-lg text-white mb-1">📉 Reduce to ₹5,000/month</div>
+                          <div className="text-sm text-gray-400">Cut your monthly investment in half</div>
+                        </div>
+                        {action === 'reduce' && (
+                          <div className="text-cyan-400 text-2xl">→</div>
+                        )}
+                      </div>
                     </button>
                   </div>
                 </div>
 
                 <button
                   onClick={() => setShowCheckpoint(true)}
-                  className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-4 px-8 rounded-xl font-semibold text-lg hover:shadow-2xl hover:scale-[1.02] glow-cyan transition-all"
                 >
-                  Continue with {action === 'cancel' ? 'Cancellation' : action === 'pause' ? 'Pause' : 'Reduction'}
+                  Proceed with {action === 'cancel' ? 'Cancellation' : action === 'pause' ? 'Pause' : 'Reduction'} →
                 </button>
+
+                <p className="text-center text-gray-500 text-sm mt-4">
+                  Demo mode • Your actual SIP won't be affected
+                </p>
               </div>
             </div>
 
