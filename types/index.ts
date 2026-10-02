@@ -1,67 +1,48 @@
-// Core SIP Types
 export interface SIPDetails {
   sipId: string;
   investorId: string;
   monthlyAmount: number;
   startDate: string;
   fundName: string;
-  fundType: string;
-  currentValue?: number;
-  goalName?: string;
-  goalAmount?: number;
-  goalDate?: string;
+  fundType: 'equity' | 'debt' | 'hybrid';
+  currentValue: number;
+  goalName: string;
+  goalAmount: number;
+  goalDate: string;
 }
 
-// Action Types
-export type SIPAction = 'pause' | 'reduce' | 'cancel';
+export type SIPAction = 'cancel' | 'pause' | 'reduce';
 
-export interface SIPChangeRequest {
-  action: SIPAction;
-  sipDetails: SIPDetails;
-  newAmount?: number; // For reduce action
-  pauseDuration?: number; // In months, for pause action
-  reason?: string;
-}
+export type PauseReason = 'market_falling' | 'need_cash' | 'lost_income' | 'unsure';
 
-// Calculation Results
 export interface ImpactCalculation {
-  originalProjection: {
-    finalAmount: number;
-    totalInvestment: number;
-    estimatedReturns: number;
-    timeToGoal: number; // months
-  };
-  projectedImpact: {
-    finalAmount: number;
-    totalInvestment: number;
-    estimatedReturns: number;
-    timeToGoal: number; // months
-    shortfall: number; // vs goal
-  };
-  assumptions: {
-    expectedReturn: number; // percentage
-    inflationRate: number; // percentage
-    marketScenario: 'conservative' | 'moderate' | 'optimistic';
-  };
-  calculationMethod: string;
+  originalProjection: Projection;
+  projectedImpact: Projection;
+  assumptions: Assumptions;
 }
 
-// Alternative Suggestions
+export interface Projection {
+  finalAmount: number;
+  totalInvestment: number;
+  totalReturns: number;
+  timeToGoal: number;
+}
+
+export interface Assumptions {
+  expectedReturn: number;
+  timeHorizon: number;
+  inflationRate?: number;
+}
+
 export interface Alternative {
   id: string;
-  type: 'reduce' | 'pause' | 'switch' | 'emergency-fund';
   title: string;
   description: string;
-  impact: {
-    shortfall: number;
-    monthsSaved: number;
-    finalAmount: number;
-  };
+  impact: string;
   pros: string[];
   cons: string[];
 }
 
-// AI Explanation
 export interface AIExplanation {
   summary: string;
   detailedExplanation: string;
@@ -70,36 +51,25 @@ export interface AIExplanation {
   confidence: 'high' | 'medium' | 'low';
 }
 
-// Checkpoint Screen Data
 export interface CheckpointData {
-  changeRequest: SIPChangeRequest;
+  sipDetails: SIPDetails;
+  action: SIPAction;
+  reason?: PauseReason;
   impactCalculation: ImpactCalculation;
+  aiExplanation?: AIExplanation;
   alternatives: Alternative[];
-  aiExplanation: AIExplanation;
-  effectiveDate: string;
+  timestamp: number;
 }
 
-// Analytics Events
-export interface AnalyticsEvent {
-  eventId: string;
-  timestamp: string;
-  userId: string;
-  eventType: 'checkpoint_shown' | 'action_confirmed' | 'action_cancelled' | 'alternative_selected' | 'info_expanded';
-  metadata: Record<string, any>;
-  sessionId: string;
-}
-
-// Success Metrics
-export interface SessionMetrics {
-  sessionId: string;
-  userId: string;
-  startTime: string;
-  endTime?: string;
-  originalAction: SIPAction;
-  finalAction: SIPAction | 'cancelled';
-  alternativeViewed: boolean;
-  timeSpent: number; // seconds
-  informedDecision: boolean;
-  calculationAccuracy: number; // 0-1
-  userFriction: 'low' | 'medium' | 'high';
+export interface SIPPreset {
+  id: string;
+  name: string;
+  description: string;
+  monthlyAmount: number;
+  currentValue: number;
+  fundName: string;
+  fundType: 'equity' | 'debt' | 'hybrid';
+  goalName: string;
+  goalAmount: number;
+  yearsToGoal: number;
 }
