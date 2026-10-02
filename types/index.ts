@@ -73,3 +73,25 @@ export interface SIPPreset {
   goalAmount: number;
   yearsToGoal: number;
 }
+
+export interface SessionMetrics {
+  sessionId: string;
+  userId?: string;
+  timestamp: number;
+  originalAction: SIPAction;
+  finalAction: SIPAction | 'continue';
+  timeSpent: number;
+  completed: boolean;
+  informedDecision: boolean;
+  reason?: PauseReason;
+}
+
+export interface AnalyticsEvent {
+  eventId: string;
+  eventType: string;
+  sessionId: string;
+  userId?: string;
+  data: Record<string, any>;
+  metadata?: Record<string, any>;
+  timestamp: number;
+}

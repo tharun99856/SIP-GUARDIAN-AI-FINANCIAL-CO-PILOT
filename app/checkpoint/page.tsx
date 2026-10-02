@@ -1,165 +1,265 @@
 'use client';
 
 import { useState } from 'react';
-import CheckpointScreen from '@/components/CheckpointScreen';
-import { SIPDetails, SIPAction } from '@/types';
-
-// Demo data for testing
-const demoSIPDetails: SIPDetails = {
-  sipId: 'SIP001',
-  investorId: 'USER123',
-  monthlyAmount: 10000,
-  startDate: '2022-01-01',
-  fundName: 'HDFC Equity Growth Fund',
-  fundType: 'equity',
-  currentValue: 280000,
-  goalName: 'Retirement Fund',
-  goalAmount: 5000000,
-  goalDate: '2035-12-31',
-};
+import { SIPPreset, SIPAction, PauseReason } from '@/types';
+import { SIP_PRESETS, REASON_LABELS } from '@/lib/presets';
+import CheckpointIntervention from '@/components/CheckpointIntervention';
 
 export default function CheckpointPage() {
-  const [action, setAction] = useState<SIPAction>('cancel');
-  const [showCheckpoint, setShowCheckpoint] = useState(false);
+  // Step 1: Select or customize SIP
+  const [selectedPreset, setSelectedPreset] = useState<string>(SIP_PRESETS[0].id);
+  const [monthlyAmount, setMonthlyAmount] = useState(SIP_PRESETS[0].monthlyAmount);
+  const [currentValue, setCurrentValue] = useState(SIP_PRESETS[0].currentValue);
+  const [goalAmount, setGoalAmount] = useState(SIP_PRESETS[0].goalAmount);
+  const [yearsToGoal, setYearsToGoal] = useState(SIP_PRESETS[0].yearsToGoal);
+  const [fundName, setFundName] = useState(SIP_PRESETS[0].fundName);
+  
+  // Step 2: Select action
+  const [action, setAction] = useState<SIPAction | null>(null);
+  
+  // Step 3: Select reason
+  const [reason, setReason] = useState<PauseReason | null>(null);
+  
+  // Step 4: Show intervention
+  const [showIntervention, setShowIntervention] = useState(false);
 
-  const handleActionChange = (newAction: SIPAction) => {
-    setAction(newAction);
-    setShowCheckpoint(false);
+  const handlePresetChange = (presetId: string) => {
+    const preset = SIP_PRESETS.find(p => p.id === presetId);
+    if (preset) {
+      setSelectedPreset(presetId);
+      setMonthlyAmount(preset.monthlyAmount);
+      setCurrentValue(preset.currentValue);
+      setGoalAmount(preset.goalAmount);
+      setYearsToGoal(preset.yearsToGoal);
+      setFundName(preset.fundName);
+      setAction(null);
+      setReason(null);
+    }
   };
 
+  const handleProceed = () => {
+    if (action && reason) {
+      setShowIntervention(true);
+    }
+  };
+
+  const handleBack = () => {
+    setShowIntervention(false);
+  };
+
+  if (showIntervention && action && reason) {
+    return (
+      <CheckpointIntervention
+        monthlyAmount={monthlyAmount}
+        currentValue={currentValue}
+        goalAmount={goalAmount}
+        yearsToGoal={yearsToGoal}
+        fundName={fundName}
+        action={action}
+        reason={reason}
+        onBack={handleBack}
+      />
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-12">
-      <div className="container mx-auto px-4">
-        {!showCheckpoint ? (
-          <div className="max-w-3xl mx-auto">
-            <div className="card-glass rounded-2xl p-10 animate-fade-in">
-              <div className="border-l-4 border-cyan-500 pl-6 mb-8">
-                <h1 className="text-4xl font-bold text-white mb-3">
-                  Checkpoint Demo
-                </h1>
-                <p className="text-gray-300 text-lg">
-                  Choose a scenario below to see how we intervene when investors try to change their SIP
-                </p>
-              </div>
+    <div className="min-h-screen bg-[#0B1B3F] py-12 px-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="mb-8 fade-in">
+          <div className="accent-bar-purple mb-6">
+            <h1 className="text-3xl font-bold text-white mb-2">
+              SIP Change Request
+            </h1>
+            <p className="text-[#5CD6F0]">
+              Before we proceed, let us show you what this decision means for your goal.
+            </p>
+          </div>
+        </div>
 
-              <div className="space-y-6">
-                <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-                  <h3 className="font-semibold text-xl mb-4 text-cyan-400">Your Current SIP</h3>
-                  <div className="grid md:grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <p className="text-gray-500 mb-1">Fund</p>
-                      <p className="text-white font-medium">{demoSIPDetails.fundName}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500 mb-1">Monthly Investment</p>
-                      <p className="text-white font-medium">₹{demoSIPDetails.monthlyAmount.toLocaleString('en-IN')}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500 mb-1">Current Value</p>
-                      <p className="text-white font-medium">₹{demoSIPDetails.currentValue?.toLocaleString('en-IN')}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500 mb-1">Goal</p>
-                      <p className="text-white font-medium">{demoSIPDetails.goalName} (₹{demoSIPDetails.goalAmount?.toLocaleString('en-IN')})</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-8">
-                  <label className="block text-sm font-medium text-gray-400 mb-4 uppercase tracking-wide">
-                    Choose Your Scenario
-                  </label>
-                  <div className="space-y-3">
-                    <button
-                      onClick={() => handleActionChange('cancel')}
-                      className={`w-full text-left p-5 rounded-xl border-2 transition-all group ${
-                        action === 'cancel'
-                          ? 'border-red-500 bg-red-500/10 shadow-lg'
-                          : 'border-slate-700 bg-slate-800/30 hover:border-red-400 hover:bg-red-500/5'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-semibold text-lg text-white mb-1">❌ Cancel SIP Completely</div>
-                          <div className="text-sm text-gray-400">Stop all future investments permanently</div>
-                        </div>
-                        {action === 'cancel' && (
-                          <div className="text-red-400 text-2xl">→</div>
-                        )}
-                      </div>
-                    </button>
-
-                    <button
-                      onClick={() => handleActionChange('pause')}
-                      className={`w-full text-left p-5 rounded-xl border-2 transition-all group ${
-                        action === 'pause'
-                          ? 'border-orange-500 bg-orange-500/10 shadow-lg'
-                          : 'border-slate-700 bg-slate-800/30 hover:border-orange-400 hover:bg-orange-500/5'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-semibold text-lg text-white mb-1">⏸️ Pause for 6 Months</div>
-                          <div className="text-sm text-gray-400">Temporarily stop, resume later</div>
-                        </div>
-                        {action === 'pause' && (
-                          <div className="text-orange-400 text-2xl">→</div>
-                        )}
-                      </div>
-                    </button>
-
-                    <button
-                      onClick={() => handleActionChange('reduce')}
-                      className={`w-full text-left p-5 rounded-xl border-2 transition-all group ${
-                        action === 'reduce'
-                          ? 'border-cyan-500 bg-cyan-500/10 shadow-lg'
-                          : 'border-slate-700 bg-slate-800/30 hover:border-cyan-400 hover:bg-cyan-500/5'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-semibold text-lg text-white mb-1">📉 Reduce to ₹5,000/month</div>
-                          <div className="text-sm text-gray-400">Cut your monthly investment in half</div>
-                        </div>
-                        {action === 'reduce' && (
-                          <div className="text-cyan-400 text-2xl">→</div>
-                        )}
-                      </div>
-                    </button>
-                  </div>
-                </div>
-
+        {/* Step 1: Select or Customize SIP */}
+        <div className="card-surface mb-6 p-6 fade-in">
+          <h2 className="text-xl font-bold text-white mb-4">Your SIP Details</h2>
+          
+          {/* Preset Selection */}
+          <div className="mb-6">
+            <label className="block text-sm text-[#94A3B8] mb-3 uppercase tracking-wide">
+              Quick Presets
+            </label>
+            <div className="grid md:grid-cols-3 gap-3">
+              {SIP_PRESETS.map((preset) => (
                 <button
-                  onClick={() => setShowCheckpoint(true)}
-                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-4 px-8 rounded-xl font-semibold text-lg hover:shadow-2xl hover:scale-[1.02] glow-cyan transition-all"
+                  key={preset.id}
+                  onClick={() => handlePresetChange(preset.id)}
+                  className={`p-4 rounded-lg border text-left transition-all btn ${
+                    selectedPreset === preset.id
+                      ? 'bg-[#0F9D8A]/10 border-[#0F9D8A]'
+                      : 'bg-transparent border-[#0F9D8A]/40 hover:border-[#0F9D8A]'
+                  }`}
                 >
-                  Proceed with {action === 'cancel' ? 'Cancellation' : action === 'pause' ? 'Pause' : 'Reduction'} →
+                  <div className="font-bold text-white text-sm mb-1">{preset.name}</div>
+                  <div className="text-xs text-[#94A3B8]">{preset.description}</div>
                 </button>
-
-                <p className="text-center text-gray-500 text-sm mt-4">
-                  Demo mode • Your actual SIP won't be affected
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-6 text-center text-sm text-gray-500">
-              <p>This is a demo. No actual SIP changes will be made.</p>
+              ))}
             </div>
           </div>
-        ) : (
-          <CheckpointScreen
-            sipDetails={demoSIPDetails}
-            action={action}
-            onConfirm={(data) => {
-              console.log('Confirmed:', data);
-              alert('Action confirmed! (Demo mode - no actual changes made)');
-              setShowCheckpoint(false);
-            }}
-            onCancel={() => {
-              console.log('Cancelled');
-              setShowCheckpoint(false);
-            }}
-          />
+
+          {/* Editable Inputs */}
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm text-[#94A3B8] mb-2">Fund Name</label>
+              <input
+                type="text"
+                value={fundName}
+                onChange={(e) => setFundName(e.target.value)}
+                className="w-full bg-[#0B1B3F] border border-[#0F9D8A]/40 rounded-lg px-4 py-2 text-white"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm text-[#94A3B8] mb-2">
+                Monthly SIP Amount (₹)
+              </label>
+              <input
+                type="number"
+                min="500"
+                max="100000"
+                step="500"
+                value={monthlyAmount}
+                onChange={(e) => setMonthlyAmount(Number(e.target.value))}
+                className="w-full bg-[#0B1B3F] border border-[#0F9D8A]/40 rounded-lg px-4 py-2 text-white"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-[#94A3B8] mb-2">
+                Current Value (₹)
+              </label>
+              <input
+                type="number"
+                min="0"
+                max="10000000"
+                step="10000"
+                value={currentValue}
+                onChange={(e) => setCurrentValue(Number(e.target.value))}
+                className="w-full bg-[#0B1B3F] border border-[#0F9D8A]/40 rounded-lg px-4 py-2 text-white"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-[#94A3B8] mb-2">
+                Goal Amount (₹)
+              </label>
+              <input
+                type="number"
+                min="100000"
+                max="100000000"
+                step="100000"
+                value={goalAmount}
+                onChange={(e) => setGoalAmount(Number(e.target.value))}
+                className="w-full bg-[#0B1B3F] border border-[#0F9D8A]/40 rounded-lg px-4 py-2 text-white"
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-sm text-[#94A3B8] mb-2">
+                Years to Goal: {yearsToGoal} years
+              </label>
+              <input
+                type="range"
+                min="1"
+                max="30"
+                step="1"
+                value={yearsToGoal}
+                onChange={(e) => setYearsToGoal(Number(e.target.value))}
+                className="w-full"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Step 2: Select Action */}
+        <div className="card-surface mb-6 p-6 fade-in">
+          <h2 className="text-xl font-bold text-white mb-4">What do you want to do?</h2>
+          
+          <div className="space-y-3">
+            <button
+              onClick={() => setAction('cancel')}
+              className={`w-full p-5 rounded-lg border-2 text-left transition-all btn ${
+                action === 'cancel'
+                  ? 'bg-[#EF4444]/10 border-[#EF4444]'
+                  : 'bg-transparent border-[#0F9D8A]/40 hover:border-[#EF4444]'
+              }`}
+            >
+              <div className="font-bold text-white mb-1">Cancel SIP Completely</div>
+              <div className="text-sm text-[#94A3B8]">Stop all future investments permanently</div>
+            </button>
+
+            <button
+              onClick={() => setAction('pause')}
+              className={`w-full p-5 rounded-lg border-2 text-left transition-all btn ${
+                action === 'pause'
+                  ? 'bg-[#F59E0B]/10 border-[#F59E0B]'
+                  : 'bg-transparent border-[#0F9D8A]/40 hover:border-[#F59E0B]'
+              }`}
+            >
+              <div className="font-bold text-white mb-1">Pause for 6 Months</div>
+              <div className="text-sm text-[#94A3B8]">Temporarily stop, resume later</div>
+            </button>
+
+            <button
+              onClick={() => setAction('reduce')}
+              className={`w-full p-5 rounded-lg border-2 text-left transition-all btn ${
+                action === 'reduce'
+                  ? 'bg-[#5CD6F0]/10 border-[#5CD6F0]'
+                  : 'bg-transparent border-[#0F9D8A]/40 hover:border-[#5CD6F0]'
+              }`}
+            >
+              <div className="font-bold text-white mb-1">Reduce to ₹{Math.floor(monthlyAmount / 2).toLocaleString('en-IN')}/month</div>
+              <div className="text-sm text-[#94A3B8]">Cut your monthly investment</div>
+            </button>
+          </div>
+        </div>
+
+        {/* Step 3: Select Reason (only if action selected) */}
+        {action && (
+          <div className="card-surface mb-6 p-6 fade-in">
+            <h2 className="text-xl font-bold text-white mb-4">Why are you doing this?</h2>
+            <p className="text-sm text-[#94A3B8] mb-4">
+              This helps us show you relevant information for your situation.
+            </p>
+            
+            <div className="space-y-3">
+              {(Object.keys(REASON_LABELS) as PauseReason[]).map((key) => (
+                <button
+                  key={key}
+                  onClick={() => setReason(key)}
+                  className={`w-full p-4 rounded-lg border text-left transition-all btn ${
+                    reason === key
+                      ? 'bg-[#0F9D8A]/10 border-[#0F9D8A]'
+                      : 'bg-transparent border-[#0F9D8A]/40 hover:border-[#0F9D8A]'
+                  }`}
+                >
+                  <div className="text-white">{REASON_LABELS[key]}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Proceed Button (only if both action and reason selected) */}
+        {action && reason && (
+          <div className="text-center fade-in">
+            <button
+              onClick={handleProceed}
+              className="bg-[#0F9D8A] text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-[#0F9D8A]/90 btn"
+            >
+              Show Me the Impact
+            </button>
+            <p className="text-[#94A3B8] text-sm mt-4">
+              Demo mode. Your actual SIP will not be affected.
+            </p>
+          </div>
         )}
       </div>
     </div>
