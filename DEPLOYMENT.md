@@ -66,13 +66,18 @@ npm install -g vercel
 In Vercel dashboard, go to **Settings → Environment Variables** and add:
 
 ```
-OPENAI_API_KEY=your_actual_openai_key_here
+# AI Provider - Choose ONE (Gemini recommended for free tier!)
+GEMINI_API_KEY=your_gemini_key_here
 # OR
-ANTHROPIC_API_KEY=your_actual_anthropic_key_here
+OPENAI_API_KEY=your_openai_key_here
+# OR
+ANTHROPIC_API_KEY=your_anthropic_key_here
 
 NEXT_PUBLIC_APP_ENV=production
 NEXT_PUBLIC_ENABLE_SHADOW_MODE=true
 ```
+
+> **💡 Get Free Gemini API Key**: Visit [Google AI Studio](https://makersuite.google.com/app/apikey) and generate a free API key. No credit card required!
 
 ### 2.4 Deploy
 
