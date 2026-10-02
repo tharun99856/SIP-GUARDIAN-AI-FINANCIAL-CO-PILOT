@@ -188,29 +188,20 @@ export function calculateSIPImpact(
     originalProjection: {
       finalAmount: Math.round(originalFinalAmount),
       totalInvestment: Math.round(originalTotalInvestment),
-      estimatedReturns: Math.round(originalReturns),
+      totalReturns: Math.round(originalReturns),
       timeToGoal: originalTimeToGoal,
     },
     projectedImpact: {
       finalAmount: Math.round(projectedFinalAmount),
       totalInvestment: Math.round(projectedTotalInvestment),
-      estimatedReturns: Math.round(projectedReturns),
+      totalReturns: Math.round(projectedReturns),
       timeToGoal: projectedTimeToGoal,
-      shortfall: Math.round(shortfall),
     },
     assumptions: {
       expectedReturn,
+      timeHorizon: Math.round(remainingMonths / 12),
       inflationRate,
-      marketScenario: 'moderate',
     },
-    calculationMethod: `
-      Calculation Method:
-      - Future Value Formula: FV = P × [(1 + r)^n - 1] / r × (1 + r)
-      - Expected Annual Return: ${expectedReturn}% (${sipDetails.fundType} fund average)
-      - Current Portfolio Value: ₹${currentValue.toLocaleString('en-IN')}
-      - Months Remaining: ${remainingMonths}
-      - All projections assume consistent returns (actual returns will vary)
-    `.trim(),
   };
 }
 
@@ -233,20 +224,27 @@ export function generateAlternatives(
       reducedAmount
     );
     
+    const reducedShortfall = sipDetails.goalAmount
+      ? Math.max(0, sipDetails.goalAmount - reducedImpact.projectedImpact.finalAmount)
+      : 0;
+    const currentShortfall = sipDetails.goalAmount
+      ? Math.max(0, sipDetails.goalAmount - currentCalculation.projectedImpact.finalAmount)
+      : 0;
+    
     alternatives.push({
       id: 'reduce-50',
       type: 'reduce',
       title: `Reduce to ₹${reducedAmount.toLocaleString('en-IN')}/month`,
       description: 'Continue investing at a lower amount instead of stopping completely',
       impact: {
-        shortfall: reducedImpact.projectedImpact.shortfall,
+        shortfall: reducedShortfall,
         monthsSaved: 0,
         finalAmount: reducedImpact.projectedImpact.finalAmount,
       },
       pros: [
         'Maintains investment discipline',
         'Keeps compounding benefits active',
-        `Reduces shortfall from ₹${currentCalculation.projectedImpact.shortfall.toLocaleString('en-IN')} to ₹${reducedImpact.projectedImpact.shortfall.toLocaleString('en-IN')}`,
+        `Reduces shortfall from ₹${currentShortfall.toLocaleString('en-IN')} to ₹${reducedShortfall.toLocaleString('en-IN')}`,
       ],
       cons: [
         `Still requires ₹${reducedAmount.toLocaleString('en-IN')} monthly commitment`,
@@ -259,13 +257,17 @@ export function generateAlternatives(
   if (action === 'cancel') {
     const pauseImpact = calculateSIPImpact(sipDetails, 'pause', undefined, 6);
     
+    const pauseShortfall = sipDetails.goalAmount
+      ? Math.max(0, sipDetails.goalAmount - pauseImpact.projectedImpact.finalAmount)
+      : 0;
+    
     alternatives.push({
       id: 'pause-6',
       type: 'pause',
       title: 'Pause for 6 months',
       description: 'Take a break and resume your SIP when ready',
       impact: {
-        shortfall: pauseImpact.projectedImpact.shortfall,
+        shortfall: pauseShortfall,
         monthsSaved: 6,
         finalAmount: pauseImpact.projectedImpact.finalAmount,
       },
@@ -282,13 +284,15 @@ export function generateAlternatives(
   }
   
   // Alternative 3: Build emergency fund first
+  const emergencyShortfall = currentCalculation.originalProjection.finalAmount - currentCalculation.projectedImpact.finalAmount;
+  
   alternatives.push({
     id: 'emergency-fund',
     type: 'emergency-fund',
     title: 'Build Emergency Fund Separately',
     description: 'Keep SIP active while building emergency corpus in liquid fund',
     impact: {
-      shortfall: currentCalculation.originalProjection.finalAmount - currentCalculation.projectedImpact.finalAmount,
+      shortfall: Math.max(0, emergencyShortfall),
       monthsSaved: 0,
       finalAmount: currentCalculation.originalProjection.finalAmount,
     },

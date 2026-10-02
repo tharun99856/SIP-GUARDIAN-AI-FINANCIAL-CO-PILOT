@@ -20,10 +20,10 @@ export async function trackEvent(
 ): Promise<void> {
   const event: AnalyticsEvent = {
     eventId: generateId(),
-    timestamp: new Date().toISOString(),
+    timestamp: Date.now(),
     userId,
     eventType,
-    metadata,
+    data: metadata,
     sessionId,
   };
 
@@ -80,7 +80,7 @@ export function getCurrentSession(): any | null {
 
 // End session and calculate metrics
 export async function endCheckpointSession(
-  finalAction: SIPAction | 'cancelled',
+  finalAction: SIPAction | 'continue',
   alternativeViewed: boolean,
   additionalMetadata?: Record<string, any>
 ): Promise<void> {
@@ -94,15 +94,13 @@ export async function endCheckpointSession(
   const metrics: SessionMetrics = {
     sessionId: session.sessionId,
     userId: session.userId,
-    startTime: session.startTime,
-    endTime: endTime.toISOString(),
+    timestamp: Date.now(),
     originalAction: session.originalAction,
     finalAction,
-    alternativeViewed,
     timeSpent,
+    completed: finalAction !== 'continue',
     informedDecision: timeSpent >= 15, // Heuristic: spent at least 15 seconds
-    calculationAccuracy: 1.0, // Deterministic calculations are always accurate
-    userFriction: timeSpent < 20 ? 'low' : timeSpent < 60 ? 'medium' : 'high',
+    reason: session.reason,
   };
 
   // Send metrics to API
@@ -114,7 +112,7 @@ export async function endCheckpointSession(
 
   // Track completion event
   await trackEvent(
-    finalAction === 'cancelled' ? 'action_cancelled' : 'action_confirmed',
+    finalAction === 'continue' ? 'action_cancelled' : 'action_confirmed',
     { finalAction, timeSpent, alternativeViewed },
     session.sessionId,
     session.userId
@@ -184,17 +182,18 @@ export function calculateAggregatedMetrics(
 
   const totalSessions = sessions.length;
   const informedDecisions = sessions.filter(s => s.informedDecision).length;
-  const cancelled = sessions.filter(s => s.finalAction === 'cancelled').length;
-  const alternativeViewed = sessions.filter(s => s.alternativeViewed).length;
+  const cancelled = sessions.filter(s => s.finalAction === 'continue').length;
   const actionChanged = sessions.filter(
-    s => s.finalAction !== 'cancelled' && s.finalAction !== s.originalAction
+    s => s.finalAction !== 'continue' && s.finalAction !== s.originalAction
   ).length;
 
   const totalTimeSpent = sessions.reduce((sum, s) => sum + s.timeSpent, 0);
 
+  // Simplified friction calculation based on time spent
   const frictionCounts = sessions.reduce(
     (acc, s) => {
-      acc[s.userFriction]++;
+      const friction = s.timeSpent < 20 ? 'low' : s.timeSpent < 60 ? 'medium' : 'high';
+      acc[friction]++;
       return acc;
     },
     { low: 0, medium: 0, high: 0 }
@@ -205,7 +204,7 @@ export function calculateAggregatedMetrics(
     informedDecisionRate: (informedDecisions / totalSessions) * 100,
     averageTimeSpent: totalTimeSpent / totalSessions,
     cancellationRate: (cancelled / totalSessions) * 100,
-    alternativeSelectionRate: (alternativeViewed / totalSessions) * 100,
+    alternativeSelectionRate: 0, // Not tracked in SessionMetrics
     frictionDistribution: {
       low: (frictionCounts.low / totalSessions) * 100,
       medium: (frictionCounts.medium / totalSessions) * 100,
@@ -221,27 +220,25 @@ export function exportSessionData(sessions: SessionMetrics[]): string {
     [
       'Session ID',
       'User ID',
-      'Start Time',
-      'End Time',
+      'Timestamp',
       'Original Action',
       'Final Action',
       'Time Spent (s)',
       'Informed Decision',
-      'Alternative Viewed',
-      'User Friction',
+      'Completed',
+      'Reason',
     ].join(','),
     ...sessions.map(s =>
       [
         s.sessionId,
-        s.userId,
-        s.startTime,
-        s.endTime || '',
+        s.userId || '',
+        s.timestamp,
         s.originalAction,
         s.finalAction,
         s.timeSpent,
         s.informedDecision,
-        s.alternativeViewed,
-        s.userFriction,
+        s.completed,
+        s.reason || '',
       ].join(',')
     ),
   ].join('\n');
