@@ -16,11 +16,11 @@ export default function Home() {
         {/* Main Title */}
         <div className="text-center mb-16 animate-fade-in">
           <h1 className="text-6xl md:text-7xl font-bold mb-6 leading-tight">
-            SIP GUARDIAN
-            <span className="block gradient-text">AI Financial Co-Pilot</span>
+            Checkpoint
+            <span className="block gradient-text">by SIP Guardian</span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-            Real-time behavioral intervention at critical SIP decision moments—helping retail investors preserve wealth through informed choices
+            AI-powered intervention at critical SIP decision moments—helping retail investors make informed choices about their wealth
           </p>
         </div>
 
@@ -28,28 +28,28 @@ export default function Home() {
         <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6 mb-16">
           <div className="card-glass rounded-2xl p-8 border-l-4 border-purple-500">
             <div className="text-sm font-semibold text-purple-400 mb-3 tracking-wide">
-              1. THE ATTRITION CRISIS
+              1. THE PROBLEM
             </div>
             <p className="text-gray-300 text-sm leading-relaxed">
-              81.05% SIP stoppage rate in 2026. 70-78% of retail SIPs discontinued within 24-36 months. Indian households suffer 5.3% annual return drag solely from emotional panic-selling.
+              Most retail investors stop their SIPs within 2-3 years, often during market corrections when emotions run high. These emotional decisions cost investors significant long-term returns.
             </p>
           </div>
 
           <div className="card-glass rounded-2xl p-8 border-l-4 border-cyan-500">
             <div className="text-sm font-semibold text-cyan-400 mb-3 tracking-wide">
-              2. THE AI INTERVENTION
+              2. THE SOLUTION
             </div>
             <p className="text-gray-300 text-sm leading-relaxed">
-              A sub-2-second proactive decision support layer triggering precisely upon "Pause/Cancel SIP" actions—revealing compounding loss, portfolio context, goal preservation, and downscaling options.
+              A sub-2-second decision support layer that activates when you try to pause or cancel your SIP—showing the real math, your actual goals, and smarter alternatives.
             </p>
           </div>
 
           <div className="card-glass rounded-2xl p-8 border-l-4 border-blue-500">
             <div className="text-sm font-semibold text-blue-400 mb-3 tracking-wide">
-              3. THE QUANTIFIED IMPACT
+              3. THE IMPACT
             </div>
             <p className="text-gray-300 text-sm leading-relaxed">
-              Retaining just 10% of paused accounts saves ₹58 Lakh SIPs monthly and preserves ₹5,500 Cr AUM for partner platforms while protecting investor compounding.
+              Even a small reduction in premature SIP cancellations can preserve crores in AUM for platforms while protecting investor wealth through better-informed decisions.
             </p>
           </div>
         </div>
@@ -58,7 +58,7 @@ export default function Home() {
         <div className="text-center max-w-4xl mx-auto card-glass rounded-3xl p-12">
           <h2 className="text-3xl font-bold mb-4">Experience the Intervention</h2>
           <p className="text-gray-400 mb-8 text-lg">
-            See how we catch investors before they make emotional decisions they'll regret
+            See how we help investors pause and think before making emotional decisions
           </p>
           
           <a
@@ -74,16 +74,19 @@ export default function Home() {
                 Analytics Dashboard
               </a>
               <span className="text-gray-600">•</span>
-              <span className="text-gray-500">MVP Phase 1 • Shadow Mode</span>
+              <span className="text-gray-500">MVP • Shadow Mode</span>
               <span className="text-gray-600">•</span>
-              <span className="text-gray-500">Gemini AI Powered</span>
+              <span className="text-gray-500">Gemini AI</span>
             </div>
           </div>
         </div>
 
         {/* Footer Note */}
         <div className="mt-16 text-center text-sm text-gray-500">
-          <p>Built for IIT Guwahati FinLit Ventures Challenge 2026</p>
+          <p>Built for IIT Guwahati FinLit Ventures Challenge</p>
+          <p className="mt-2 text-xs text-gray-600">
+            Demo uses deterministic SIP calculations. AI generates explanations only.
+          </p>
         </div>
       </div>
     </main>
