@@ -1,64 +1,94 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* FinLit Ventures Color Palette */
-  --navy-dark: #0f172a;
-  --navy-primary: #1e293b;
-  --cyan-accent: #06b6d4;
-  --cyan-light: #22d3ee;
-  --purple-accent: #a855f7;
-  --green-success: #10b981;
-  --red-warning: #ef4444;
-  --orange-alert: #f59e0b;
+  /* Spacing scale */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-48: 48px;
   
-  /* Neutral palette */
-  --gray-50: #f8fafc;
-  --gray-100: #f1f5f9;
-  --gray-200: #e2e8f0;
-  --gray-300: #cbd5e1;
-  --gray-700: #334155;
-  --gray-800: #1e293b;
-  --gray-900: #0f172a;
+  /* FinLit Ventures Color Palette - exact match */
+  --navy-deep: #0B1B3F;
+  --navy-surface: #12244F;
+  --teal-accent: #0F9D8A;
+  --cyan-text: #5CD6F0;
+  --purple-bar: #6B1FA0;
+  --text-white: #FFFFFF;
+  --text-muted: #94A3B8;
   
-  --background: var(--gray-50);
-  --foreground: var(--navy-dark);
+  /* Semantic colors */
+  --color-success: var(--teal-accent);
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  
+  /* Radii */
+  --radius-card: 12px;
+  --radius-button: 8px;
+  
+  /* Border */
+  --border-teal: 1px solid rgba(15, 157, 138, 0.4);
+  
+  /* Transitions */
+  --transition-fast: 150ms ease-out;
+  --transition-normal: 200ms ease-out;
 }
 
 body {
-  color: var(--foreground);
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--text-white);
+  background: var(--navy-deep);
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
   font-weight: 400;
   line-height: 1.6;
   min-height: 100vh;
-  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Smooth animations */
+/* Reset aggressive transitions */
 * {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: none;
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--gray-900);
+  background: var(--navy-deep);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--cyan-accent);
-  border-radius: 5px;
+  background: var(--teal-accent);
+  border-radius: var(--radius-button);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--cyan-light);
+  background: var(--cyan-text);
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus states */
+*:focus-visible {
+  outline: 2px solid var(--cyan-text);
+  outline-offset: 2px;
 }
 
 @layer utilities {
@@ -66,36 +96,54 @@ body {
     text-wrap: balance;
   }
   
-  .gradient-text {
-    background: linear-gradient(135deg, var(--cyan-accent) 0%, var(--purple-accent) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  /* Card styling - no glassmorphism */
+  .card-surface {
+    background: var(--navy-surface);
+    border: var(--border-teal);
+    border-radius: var(--radius-card);
   }
   
-  .card-glass {
-    background: rgba(30, 41, 59, 0.8);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(6, 182, 212, 0.2);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  /* Subtle hover for cards */
+  .card-hover {
+    transition: border-color var(--transition-normal), transform var(--transition-normal);
   }
   
-  .glow-cyan {
-    box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+  .card-hover:hover {
+    border-color: var(--teal-accent);
+    transform: translateY(-2px);
   }
   
-  .animate-fade-in {
-    animation: fadeIn 0.5s ease-in-out;
+  /* Button base */
+  .btn {
+    border-radius: var(--radius-button);
+    transition: background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+  }
+  
+  .btn:hover {
+    transform: translateY(-1px);
+  }
+  
+  .btn:active {
+    transform: translateY(0);
+  }
+  
+  /* Purple accent bar (left border only) */
+  .accent-bar-purple {
+    border-left: 4px solid var(--purple-bar);
+    padding-left: var(--space-16);
+  }
+  
+  /* Simple fade-in (no translateY on load) */
+  .fade-in {
+    animation: fadeIn var(--transition-normal) ease-out;
   }
   
   @keyframes fadeIn {
     from {
       opacity: 0;
-      transform: translateY(10px);
     }
     to {
       opacity: 1;
-      transform: translateY(0);
     }
   }
 }
