@@ -52,8 +52,9 @@ async function generateAIExplanation(
   // Check which AI provider is configured
   const openaiKey = process.env.OPENAI_API_KEY;
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
+  const geminiKey = process.env.GEMINI_API_KEY;
 
-  if (!openaiKey && !anthropicKey) {
+  if (!openaiKey && !anthropicKey && !geminiKey) {
     // Fallback to template-based explanation if no AI is configured
     return generateTemplateExplanation(
       sipDetails,
@@ -111,8 +112,12 @@ Return ONLY a JSON object with this structure:
 
     let aiResponse: any;
 
-    // Use OpenAI if available
-    if (openaiKey) {
+    // Use Gemini if available (free tier!)
+    if (geminiKey) {
+      aiResponse = await callGemini(prompt, geminiKey);
+    }
+    // Otherwise use OpenAI if available
+    else if (openaiKey) {
       aiResponse = await callOpenAI(prompt, openaiKey);
     } 
     // Otherwise use Anthropic
@@ -160,6 +165,40 @@ async function callOpenAI(prompt: string, apiKey: string): Promise<string> {
 
   const data = await response.json();
   return data.choices[0].message.content;
+}
+
+async function callGemini(prompt: string, apiKey: string): Promise<string> {
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              {
+                text: prompt
+              }
+            ]
+          }
+        ],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 1000,
+        }
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`Gemini API error: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.candidates[0].content.parts[0].text;
 }
 
 async function callAnthropic(prompt: string, apiKey: string): Promise<string> {

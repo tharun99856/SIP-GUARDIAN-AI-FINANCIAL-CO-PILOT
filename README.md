@@ -155,13 +155,18 @@ cp .env.example .env
 
 Edit `.env` and add your API keys:
 ```env
+# Google Gemini (FREE tier - RECOMMENDED!)
+GEMINI_API_KEY=your_gemini_key_here
+# OR OpenAI
 OPENAI_API_KEY=your_openai_key_here
-# OR
+# OR Anthropic
 ANTHROPIC_API_KEY=your_anthropic_key_here
 
 NEXT_PUBLIC_APP_ENV=development
 NEXT_PUBLIC_ENABLE_SHADOW_MODE=true
 ```
+
+> **💡 Tip**: Gemini offers a free tier with 15 requests/minute! Get your key at [Google AI Studio](https://makersuite.google.com/app/apikey)
 
 4. **Run development server**
 ```bash
