@@ -277,7 +277,7 @@ function generateTemplateExplanation(
   ];
 
   const riskFactors = [
-    'Market swings: Actual returns could be higher or lower than the ${impactCalculation.assumptions.expectedReturn}% we're projecting',
+    `Market swings: Actual returns could be higher or lower than the ${impactCalculation.assumptions.expectedReturn}% we're projecting`,
     'Inflation: What you can buy with this money years from now depends on how prices change',
     'Timing trap: People who pause during dips usually miss the recovery that follows',
   ];
