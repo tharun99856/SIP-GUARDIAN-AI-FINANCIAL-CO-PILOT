@@ -1,6 +1,6 @@
 # Checkpoint by SIP Guardian
 
-> Smart intervention system helping investors understand the consequences of SIP changes and make informed decisions
+> AI-powered intervention system helping investors understand the consequences of SIP changes and make informed decisions
 
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
