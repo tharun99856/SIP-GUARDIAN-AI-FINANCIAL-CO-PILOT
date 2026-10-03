@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { SIPAction, PauseReason } from '@/types';
 import { SIP_PRESETS, REASON_LABELS } from '@/lib/presets';
 import CheckpointIntervention from '@/components/CheckpointIntervention';
@@ -76,20 +77,15 @@ export default function CheckpointPage() {
   return (
     <>
       {/* ── Navbar ─────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-50 bg-[#060B18]/80 backdrop-blur-md border-b border-white/[0.06]">
-        <div className="page-container h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <Link href="/" className="flex items-center gap-2 text-white hover:opacity-85 transition-opacity">
-              <div
-                className="w-7 h-7 rounded-lg flex items-center justify-center text-[#050E1D] font-bold text-xs"
-                style={{ background: 'linear-gradient(135deg, #00E599, #38BDF8)' }}
-              >
-                CP
-              </div>
+      <header className="sticky top-0 z-50 bg-[#060B18]/95 backdrop-blur-md border-b border-white/[0.08]">
+        <div className="page-container h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-3 text-white hover:opacity-90 transition-opacity">
+              <Image src="/logo.png" alt="Checkpoint Logo" width={36} height={36} className="rounded-lg" priority />
               <span className="font-bold text-base tracking-tight hidden sm:inline">Checkpoint</span>
             </Link>
             <span className="text-slate-600 hidden sm:inline">/</span>
-            <span className="text-xs sm:text-sm text-cyan-400 font-medium">SIP Change Flow</span>
+            <span className="text-sm text-cyan-400 font-medium">SIP Change Flow</span>
           </div>
 
           <div className="flex items-center gap-2">

@@ -1,22 +1,25 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Home() {
   return (
     <>
       {/* ── Sticky Navbar ─────────────────────────────────────── */}
-      <header className="sticky top-0 z-50 bg-[#060B18]/80 backdrop-blur-md border-b border-white/[0.06]">
-        <div className="page-container h-14 flex items-center justify-between">
-          {/* Brand */}
-          <div className="flex items-center gap-2.5">
-            <div
-              className="w-7 h-7 rounded-lg flex items-center justify-center text-[#050E1D] font-bold text-xs"
-              style={{ background: "linear-gradient(135deg, #00E599, #38BDF8)" }}
-            >
-              CP
-            </div>
-            <span className="font-bold text-base tracking-tight text-white leading-none">
+      <header className="sticky top-0 z-50 bg-[#060B18]/95 backdrop-blur-md border-b border-white/[0.08]">
+        <div className="page-container h-16 flex items-center justify-between">
+          {/* Brand with Logo */}
+          <div className="flex items-center gap-3">
+            <Image
+              src="/logo.png"
+              alt="Checkpoint Logo"
+              width={40}
+              height={40}
+              className="rounded-lg"
+              priority
+            />
+            <span className="font-bold text-lg tracking-tight text-white leading-none">
               Checkpoint{" "}
-              <span className="text-xs font-normal text-slate-400">
+              <span className="text-sm font-normal text-slate-400">
                 by SIP Guardian
               </span>
             </span>
@@ -101,7 +104,7 @@ export default function Home() {
           />
         </div>
 
-        <div className="page-container relative z-10 py-14 md:py-20">
+        <div className="page-container relative z-10 py-16 md:py-24">
           {/* ── Event badge ── */}
           <div className="flex justify-center mb-8 fade-in">
             <div className="brand-badge">
@@ -121,20 +124,14 @@ export default function Home() {
           </div>
 
           {/* ── Hero ── */}
-          <section className="text-center mb-16 md:mb-20 fade-in">
-            <h1
-              className="text-display mx-auto mb-5"
-              style={{ maxWidth: "42rem" }}
-            >
+          <section className="text-center mb-20 md:mb-24 fade-in">
+            <h1 className="text-display mx-auto mb-6" style={{ maxWidth: "46rem" }}>
               <span className="text-white block">Smarter Interventions for</span>
-              <span className="gradient-text-teal block mt-1">
+              <span className="gradient-text-teal block mt-2">
                 High-Stakes SIP Decisions
               </span>
             </h1>
-            <p
-              className="text-body text-slate-300 mx-auto leading-relaxed"
-              style={{ maxWidth: "36rem", fontSize: "1.05rem" }}
-            >
+            <p className="text-body text-slate-300 mx-auto leading-relaxed" style={{ maxWidth: "40rem", fontSize: "1.1rem" }}>
               A sub-2-second decision support layer that steps in when retail
               investors pause or cancel SIPs — replacing panic with real
               compounding math, goal forecasts, and calibrated middle paths.
@@ -142,10 +139,7 @@ export default function Home() {
           </section>
 
           {/* ── Three feature cards ── */}
-          <section
-            className="grid gap-5 mb-16"
-            style={{ gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))" }}
-          >
+          <section className="grid gap-6 mb-20" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
             {[
               {
                 num: "01",
@@ -201,90 +195,50 @@ export default function Home() {
             ))}
           </section>
 
-          {/* ── CTA card ── */}
-          <section
-            className="card-glass-elevated text-center mx-auto slide-up"
-            style={{
-              maxWidth: "48rem",
-              animationDelay: "240ms",
-              padding: "2.5rem 2rem",
-            }}
-          >
-            {/* inner glow */}
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background:
-                  "linear-gradient(135deg, rgba(0,229,153,0.08) 0%, rgba(56,189,248,0.07) 50%, rgba(99,102,241,0.06) 100%)",
-              }}
-            />
+          {/* ── CTA Section ── */}
+          <section className="text-center mx-auto slide-up" style={{ maxWidth: "52rem", animationDelay: "240ms" }}>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-5"
+              style={{ background: "rgba(56,189,248,0.1)", border: "1px solid rgba(56,189,248,0.3)" }}
+            >
+              <span className="inline-block w-2 h-2 rounded-full animate-pulse" style={{ background: "#38BDF8" }} />
+              <span className="text-xs font-semibold text-cyan-300 uppercase tracking-wider">Interactive Simulation</span>
+            </div>
 
-            <div className="relative z-10">
-              <span className="status-indicator status-info mb-4">
-                Interactive Simulation
-              </span>
+            <h2 className="text-heading-1 text-white mb-4">
+              Experience the Live Checkpoint System
+            </h2>
+            <p className="text-body text-slate-300 mb-10 mx-auto" style={{ maxWidth: "36rem" }}>
+              Simulate an investor attempting to stop a ₹10,000/mo SIP and see
+              the real-time AI intervention with compounding loss calculation.
+            </p>
 
-              <h2 className="text-heading-1 text-white mt-4 mb-3">
-                Experience the Live Checkpoint System
-              </h2>
-              <p
-                className="text-body text-slate-300 mb-8 mx-auto"
-                style={{ maxWidth: "32rem" }}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+              <Link
+                href="/checkpoint"
+                className="btn-base btn-primary btn-lg w-full sm:w-auto"
+                style={{ boxShadow: "0 0 24px rgba(0,229,153,0.4)" }}
               >
-                Simulate an investor attempting to stop a ₹10,000/mo SIP and see
-                the real-time AI intervention with compounding loss calculation.
-              </p>
+                Launch Checkpoint Demo
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </Link>
+              <Link href="/dashboard" className="btn-base btn-secondary btn-lg w-full sm:w-auto">
+                View Analytics Dashboard
+              </Link>
+            </div>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <Link
-                  href="/checkpoint"
-                  className="btn-base btn-primary btn-lg w-full sm:w-auto"
-                  style={{
-                    boxShadow: "0 0 22px rgba(0,229,153,0.38)",
-                  }}
-                >
-                  Launch Checkpoint Demo
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M14 5l7 7m0 0l-7 7m7-7H3"
-                    />
-                  </svg>
-                </Link>
-                <Link
-                  href="/dashboard"
-                  className="btn-base btn-secondary btn-lg w-full sm:w-auto"
-                >
-                  View Analytics Dashboard
-                </Link>
-              </div>
-
-              <div className="mt-8 pt-5 flex flex-wrap justify-center items-center gap-5 text-xs text-slate-400"
-                style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
-              >
-                {[
-                  { dot: "#00E599", label: "Deterministic SIP Core" },
-                  { dot: "#38BDF8", label: "Sub-2s Latency SLA" },
-                  { dot: "#818CF8", label: "Shadow Mode Telemetry" },
-                ].map((item) => (
-                  <span key={item.label} className="flex items-center gap-1.5">
-                    <span
-                      className="inline-block w-1.5 h-1.5 rounded-full"
-                      style={{ background: item.dot }}
-                    />
-                    {item.label}
-                  </span>
-                ))}
-              </div>
+            <div className="flex flex-wrap justify-center items-center gap-6 text-xs text-slate-400">
+              {[
+                { dot: "#00E599", label: "Deterministic SIP Core" },
+                { dot: "#38BDF8", label: "Sub-2s Latency SLA" },
+                { dot: "#818CF8", label: "Shadow Mode Telemetry" },
+              ].map((item) => (
+                <span key={item.label} className="flex items-center gap-2">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full" style={{ background: item.dot }} />
+                  {item.label}
+                </span>
+              ))}
             </div>
           </section>
 
