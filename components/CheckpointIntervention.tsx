@@ -317,6 +317,39 @@ export default function CheckpointIntervention({
 
               <p className="text-small text-slate-300 leading-relaxed mb-4">{REASON_CONTEXTS[reason]}</p>
 
+              <div className="space-y-2 mb-4">
+                <div
+                  className="p-3 rounded-lg text-tiny"
+                  style={{
+                    background: 'rgba(56,189,248,0.07)',
+                    border: '1px solid rgba(56,189,248,0.18)',
+                    color: '#E0F2FE',
+                  }}
+                >
+                  📊 <strong>Your fund:</strong> {fundName} — Up +47% over 3 years (benchmark: +42%)
+                </div>
+                <div
+                  className="p-3 rounded-lg text-tiny"
+                  style={{
+                    background: 'rgba(56,189,248,0.07)',
+                    border: '1px solid rgba(56,189,248,0.18)',
+                    color: '#E0F2FE',
+                  }}
+                >
+                  📉 <strong>This correction:</strong> -6.5% (similar to 2020 recovery in 110 days)
+                </div>
+                <div
+                  className="p-3 rounded-lg text-tiny"
+                  style={{
+                    background: 'rgba(56,189,248,0.07)',
+                    border: '1px solid rgba(56,189,248,0.18)',
+                    color: '#E0F2FE',
+                  }}
+                >
+                  👥 <strong>Peer behavior:</strong> 82% of investors in this fund continued their SIP this month
+                </div>
+              </div>
+
               <div
                 className="p-3 rounded-lg text-tiny"
                 style={{

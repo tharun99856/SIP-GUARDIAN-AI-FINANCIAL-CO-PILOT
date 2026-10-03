@@ -278,6 +278,42 @@ export default function CheckpointPage() {
             </div>
           </section>
 
+          {/* ── Trigger Action Button (always visible) ── */}
+          <section className="text-center mb-6 slide-up" style={{ animationDelay: '60ms' }}>
+            <button
+              type="button"
+              onClick={() => {
+                // Auto-select cancel action if nothing selected
+                if (!action) setAction('cancel');
+                if (!reason) setReason('market_falling');
+                // If both are set, trigger intervention
+                if (action && reason) {
+                  setShowIntervention(true);
+                } else {
+                  // Scroll down to action selection
+                  window.scrollTo({ top: document.body.scrollHeight / 2, behavior: 'smooth' });
+                }
+              }}
+              className="btn-base btn-lg"
+              style={{
+                paddingLeft: '2.5rem',
+                paddingRight: '2.5rem',
+                background: 'linear-gradient(135deg, #F43F5E, #FB7185)',
+                color: '#FFFFFF',
+                border: '1px solid rgba(244,63,94,0.5)',
+                boxShadow: '0 0 28px rgba(244,63,94,0.4)',
+              }}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              🚨 Trigger SIP Pause Intent
+            </button>
+            <p className="text-xs text-slate-500 mt-3">
+              {action && reason ? 'Proceed to see intervention' : 'Complete setup below first'}
+            </p>
+          </section>
+
           {/* ── Step 2: Action ── */}
           <section className="card-glass p-6 mb-6 slide-up" style={{ animationDelay: '100ms' }}>
             <h2 className="text-heading-3 text-white flex items-center gap-2 mb-4">
