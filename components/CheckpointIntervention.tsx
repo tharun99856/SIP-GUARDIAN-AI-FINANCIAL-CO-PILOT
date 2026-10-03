@@ -101,8 +101,7 @@ export default function CheckpointIntervention({
     if (!comparison) return;
     
     const delta = Math.abs(comparison[action].deltaVsContinue);
-    let start = 0;
-    const duration = 600;
+    const duration = 800;
     const startTime = Date.now();
 
     const animate = () => {
@@ -123,162 +122,176 @@ export default function CheckpointIntervention({
   if (!comparison) {
     return (
       <div className="min-h-screen bg-[#0B1B3F] flex items-center justify-center">
-        <div className="text-[#5CD6F0]">Calculating impact...</div>
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-12 h-12 border-4 border-[#0F9D8A] border-t-transparent rounded-full animate-spin"></div>
+          <div className="text-[#5CD6F0] text-body">Calculating impact...</div>
+        </div>
       </div>
     );
   }
 
   const currentScenario = comparison[action];
   const middlePathScenario = action === 'cancel' ? comparison.reduce : comparison.pause;
-  const delta = Math.abs(currentScenario.deltaVsContinue);
 
   return (
-    <div className="min-h-screen bg-[#0B1B3F] py-12 px-4">
+    <div className="min-h-screen bg-[#0B1B3F] py-8 md:py-12 px-4">
       <div className="max-w-5xl mx-auto">
         {/* Big Number - The Cost */}
-        <div className="card-surface p-8 mb-6 text-center fade-in">
-          <p className="text-[#94A3B8] text-sm uppercase tracking-wide mb-2">
+        <section className="card-elevated p-6 md:p-8 mb-6 text-center fade-in" role="region" aria-label="Financial impact">
+          <p className="text-tiny uppercase tracking-wider text-[#94A3B8] mb-3">
             This decision costs you
           </p>
-          <div className="text-5xl md:text-7xl font-bold text-[#EF4444] mb-2">
+          <div className="text-5xl sm:text-6xl md:text-7xl font-bold text-[#EF4444] mb-3 font-numeric" role="status" aria-live="polite">
             {formatCurrency(animatedDelta)}
           </div>
-          <p className="text-[#94A3B8]">
-            by your goal date ({yearsToGoal} years from now)
+          <p className="text-small text-[#CBD5E1]">
+            by your goal date ({yearsToGoal} {yearsToGoal === 1 ? 'year' : 'years'} from now)
           </p>
-        </div>
+        </section>
 
-        {/* Three Compact Blocks */}
-        <div className="grid md:grid-cols-3 gap-4 mb-6">
+        {/* Three Information Blocks */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
           {/* Goal Impact */}
-          <div className="card-surface p-6">
-            <h3 className="text-sm uppercase tracking-wide text-[#5CD6F0] mb-3">Goal Impact</h3>
-            <div className="space-y-3">
+          <article className="card-surface p-5 slide-up" style={{ animationDelay: '50ms' }}>
+            <h3 className="text-tiny uppercase tracking-wider text-[#5CD6F0] mb-4 font-semibold">Goal Impact</h3>
+            <div className="space-y-4">
               <div>
-                <p className="text-xs text-[#94A3B8]">Corpus at goal date</p>
-                <p className="text-xl font-bold text-white">
+                <p className="text-tiny text-[#94A3B8] mb-1">Corpus at goal date</p>
+                <p className="text-heading-3 text-white font-numeric">
                   {formatCurrency(currentScenario.finalCorpus)}
                 </p>
               </div>
               <div>
-                <p className="text-xs text-[#94A3B8]">Percentage of goal</p>
-                <p className="text-xl font-bold text-white">
+                <p className="text-tiny text-[#94A3B8] mb-1">Percentage of goal</p>
+                <p className="text-heading-3 text-white font-numeric">
                   {currentScenario.percentOfGoal.toFixed(1)}%
                 </p>
               </div>
               {currentScenario.monthsDelayToGoal && currentScenario.monthsDelayToGoal > 0 && (
                 <div>
-                  <p className="text-xs text-[#94A3B8]">Delay to reach goal</p>
-                  <p className="text-xl font-bold text-[#F59E0B]">
+                  <p className="text-tiny text-[#94A3B8] mb-1">Delay to reach goal</p>
+                  <p className="text-heading-3 text-[#F59E0B] font-numeric">
                     +{Math.floor(currentScenario.monthsDelayToGoal / 12)} years
                   </p>
                 </div>
               )}
             </div>
-          </div>
+          </article>
 
           {/* Context */}
-          <div className="card-surface p-6">
-            <h3 className="text-sm uppercase tracking-wide text-[#5CD6F0] mb-3">Context</h3>
-            <p className="text-sm text-[#94A3B8] leading-relaxed">
+          <article className="card-surface p-5 slide-up" style={{ animationDelay: '100ms' }}>
+            <h3 className="text-tiny uppercase tracking-wider text-[#5CD6F0] mb-4 font-semibold">Context</h3>
+            <p className="text-small text-[#CBD5E1] leading-relaxed mb-3">
               {REASON_CONTEXTS[reason]}
             </p>
-            <p className="text-xs text-[#94A3B8] mt-3 italic">
+            <p className="text-tiny text-[#94A3B8] italic">
               Note: Illustrative context based on historical patterns. Not a guarantee.
             </p>
-          </div>
+          </article>
 
           {/* Middle Path */}
-          <div className="card-surface p-6">
-            <h3 className="text-sm uppercase tracking-wide text-[#5CD6F0] mb-3">Middle Path</h3>
-            <div className="space-y-3">
+          <article className="card-surface p-5 sm:col-span-2 lg:col-span-1 slide-up" style={{ animationDelay: '150ms' }}>
+            <h3 className="text-tiny uppercase tracking-wider text-[#5CD6F0] mb-4 font-semibold">Middle Path</h3>
+            <div className="space-y-4">
               <div>
-                <p className="text-xs text-[#94A3B8]">{middlePathScenario.description}</p>
-                <p className="text-xl font-bold text-white mt-1">
+                <p className="text-tiny text-[#94A3B8] mb-1">{middlePathScenario.description}</p>
+                <p className="text-heading-3 text-white mt-2 font-numeric">
                   {formatCurrency(middlePathScenario.finalCorpus)}
                 </p>
               </div>
               <div>
-                <p className="text-xs text-[#94A3B8]">Loss vs continuing</p>
-                <p className="text-lg font-bold text-[#F59E0B]">
+                <p className="text-tiny text-[#94A3B8] mb-1">Loss vs continuing</p>
+                <p className="text-xl font-bold text-[#F59E0B] font-numeric">
                   {formatCurrency(Math.abs(middlePathScenario.deltaVsContinue))}
                 </p>
               </div>
-              <p className="text-xs text-[#94A3B8]">
+              <p className="text-tiny text-[#94A3B8]">
                 Reaches {middlePathScenario.percentOfGoal.toFixed(1)}% of your goal
               </p>
             </div>
-          </div>
+          </article>
         </div>
 
         {/* AI Message */}
-        <div className="card-surface p-6 mb-6">
-          <div className="flex items-start space-x-3">
-            <div className="w-2 h-2 bg-[#0F9D8A] rounded-full mt-2"></div>
-            <div className="flex-1">
+        <section className="card-surface p-5 md:p-6 mb-6 slide-up" style={{ animationDelay: '200ms' }} role="region" aria-label="AI explanation">
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#0F9D8A]/20 flex items-center justify-center mt-1">
+              <div className="w-2.5 h-2.5 bg-[#0F9D8A] rounded-full"></div>
+            </div>
+            <div className="flex-1 min-w-0">
               {isLoadingAI ? (
-                <div className="animate-pulse">
-                  <div className="h-4 bg-[#12244F] rounded w-3/4 mb-2"></div>
-                  <div className="h-4 bg-[#12244F] rounded w-1/2"></div>
+                <div className="space-y-2" role="status" aria-label="Loading AI explanation">
+                  <div className="h-4 skeleton rounded w-11/12"></div>
+                  <div className="h-4 skeleton rounded w-10/12"></div>
+                  <div className="h-4 skeleton rounded w-9/12"></div>
                 </div>
               ) : (
                 <>
-                  <p className="text-white leading-relaxed">{aiMessage}</p>
-                  <p className="text-xs text-[#94A3B8] mt-2">
-                    Generated in {(aiLatency / 1000).toFixed(1)}s
-                  </p>
+                  <p className="text-body text-white leading-relaxed">{aiMessage}</p>
+                  <div className="flex items-center gap-2 mt-3">
+                    <span className="status-indicator status-success">
+                      AI Generated
+                    </span>
+                    <span className="text-tiny text-[#94A3B8]">
+                      {(aiLatency / 1000).toFixed(2)}s
+                    </span>
+                  </div>
                 </>
               )}
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Disclaimer */}
-        <div className="card-surface p-4 mb-6 border-l-4 border-[#F59E0B]">
-          <p className="text-xs text-[#94A3B8]">
-            <strong className="text-white">Disclaimer:</strong> This is a decision-support tool, not investment advice.
+        <aside className="card-surface p-4 mb-6 border-l-4 border-[#F59E0B] slide-up" style={{ animationDelay: '250ms' }}>
+          <p className="text-tiny text-[#CBD5E1]">
+            <strong className="text-white font-semibold">Disclaimer:</strong> This is a decision-support tool, not investment advice.
             Projections assume 12% annual returns (not guaranteed). Based on historical equity fund averages.
             Actual returns will vary. Markets fluctuate.
           </p>
-        </div>
+        </aside>
 
         {/* Action Buttons */}
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className="grid sm:grid-cols-3 gap-3 md:gap-4 slide-up" style={{ animationDelay: '300ms' }}>
           <button
+            type="button"
             onClick={() => {
               console.log('Continue SIP');
               onBack();
             }}
-            className="bg-[#0F9D8A] text-white p-4 rounded-lg font-bold hover:bg-[#0F9D8A]/90 btn"
+            className="btn-base btn-primary"
           >
             Continue My SIP
           </button>
 
           <button
+            type="button"
             onClick={() => {
               console.log('Take middle path');
               onBack();
             }}
-            className="bg-[#F59E0B] text-white p-4 rounded-lg font-bold hover:bg-[#F59E0B]/90 btn"
+            className="btn-base btn-secondary"
           >
-            Take the Middle Path
+            Take Middle Path
           </button>
 
           <button
+            type="button"
             onClick={() => {
               console.log('Proceed anyway');
               onBack();
             }}
-            className="bg-transparent border-2 border-[#EF4444] text-[#EF4444] p-4 rounded-lg font-bold hover:bg-[#EF4444]/10 btn"
+            className="btn-base btn-danger"
           >
             Proceed Anyway
           </button>
         </div>
 
-        <div className="text-center mt-6">
+        <div className="text-center mt-6 slide-up" style={{ animationDelay: '350ms' }}>
           <button
+            type="button"
             onClick={onBack}
-            className="text-[#5CD6F0] text-sm hover:underline"
+            className="btn-base btn-ghost text-small"
           >
             ← Back to inputs
           </button>
